@@ -26,7 +26,7 @@ public class UserInfoController {
 	 * 비즈니스 로직(중요 로직을 수행하기 위해 사용되는 서비스를 메모리에 적재(싱글톤패턴 적용됨)
 	 */
 	@Resource(name = "UserInfoService")
-	private UserInfoService userService;
+	private UserInfoService userInfoService;
 	
 	/**
 	 * 회원가입 화면으로 이동
