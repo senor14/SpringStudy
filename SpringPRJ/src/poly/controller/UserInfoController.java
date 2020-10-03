@@ -3,6 +3,7 @@ package poly.controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -10,7 +11,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import poly.dto.UserInfoDTO;
-import poly.service.impl.UserInfoService;
+import poly.service.IUserInfoService;
 import poly.util.CmmUtil;
 import poly.util.EncryptUtil;
 
@@ -26,7 +27,7 @@ public class UserInfoController {
 	 * 비즈니스 로직(중요 로직을 수행하기 위해 사용되는 서비스를 메모리에 적재(싱글톤패턴 적용됨)
 	 */
 	@Resource(name = "UserInfoService")
-	private UserInfoService userInfoService;
+	private IUserInfoService userInfoService;
 	
 	/**
 	 * 회원가입 화면으로 이동
@@ -140,5 +141,124 @@ public class UserInfoController {
 		}
 		
 		return "/user/Msg";
+	}
+	
+	/**
+	 * 로그인을 위한 입력 화면으로 이동
+	 */
+	@RequestMapping(value="user/loginForm")
+	public String loginForm() {
+		log.info(this.getClass().getName() + ".user/loginForm ok!");
+		
+		return "/user/LoginForm";
+	}
+	
+	/**
+	 * 로그인 처리 및 결과 알려주는 화면으로 이동
+	 */
+	@RequestMapping(value="user/getUserLoginCheck")
+	public String getUserLoginCheck(HttpSession session, HttpServletRequest request, HttpServletResponse response,
+			ModelMap model) throws Exception {
+		log.info(this.getClass().getName() + ".getUserLoginCheck start!");
+		
+		
+		// 로그인 처리 결과를 저장할 변수 (로그인 성공 : 1, 아이디, 비밀번호 불일치로 인한 실패 : 0, 시스템 에러 : 2)
+		int res = 0;
+		
+		
+		// 웹(회워정보 입력화면)에서 받는 정보를 저장할 변수
+		UserInfoDTO pDTO = null;
+		
+		try {
+			
+			/*
+			 * ###########################################################
+			 * 			웹(회원정보 입력화면)에서 받는 정보를 String 변수에 저장 시작!!
+			 * 
+			 * 		무조건 웹으로 받은 정보는 DTO에 저장하기 위해 임시로 String 변수에 저장함
+			 * ###########################################################
+			 */
+			String user_id = CmmUtil.nvl(request.getParameter("user_id")); // 아이디
+			String password = CmmUtil.nvl(request.getParameter("password")); // 아이디
+			/*
+			 * ###########################################################
+			 * 			웹(회원정보 입력화면)에서 받는 정보를 String 변수에 저장 끝!!
+			 * 
+			 * 		무조건 웹으로 받은 정보는 DTO에 저장하기 위해 임시로 String 변수에 저장함
+			 * ########################################################### 			
+			 */
+			
+			/*
+			 * ###########################################################
+			 * 		반드시, 값을 받았으면, 꼭 로그를 찍어서 값이 제대로 들어오는지 파악해야함
+			 * 							반드시 작성할 것
+			 * ###########################################################
+			 */
+			log.info("user_id : "+ user_id);
+			log.info("password : "+ password);
+			/*
+			 * ###########################################################
+			 * 			웹(회원정보 입력화면)에서 받는 정보를 DTO에 저장하기 시작!!
+			 * 
+			 * 		무조건 웹으로 받은 정보는 DTO에 저장해야 한다고 이해하길 권함
+			 * ###########################################################
+			 */
+			
+			//웹(회원정보 입력화면)에서 받는 정보를 저장할 변수를 메모리에 올리기
+			pDTO = new UserInfoDTO();
+			
+			pDTO.setUser_id(user_id);
+			
+			//비밀번호는 절대로 복호화되지 않도록 해시 알고리즘을 암호화함
+			pDTO.setPassword(EncryptUtil.encHashSHA256(password));
+			
+			/*
+			 * ###########################################################
+			 * 			웹(회원정보 입력화면)에서 받는 정보를 DTO에 저장하기 끝!!
+			 * 
+			 * 		무조건 웹으로 받은 정보는 DTO에 저장해야 한다고 이해하길 권함
+			 * ###########################################################
+			 */
+			
+			// 로그인을 위해 아이디와 비밀번호가 일치하는지 확인하기 위한 userInfoService 호출하기
+			res = userInfoService.getUserLoginCheck(pDTO);
+			
+			/*
+			 * 로그인을 성공했다면, 회원아이디 정보를 session에 저장함
+			 * 
+			 * 세션은 톰켓(was)의 메모리에 존재하며, 웹사이트에 접속한 사람(연결된 객체)마다 메모리에 값을 올린다.
+			 * 
+			 * 예) 톰켓에 100명의 사용자가 로그인했다면, 사용자 각각 
+			 */
+			if (res == 1) { //로그인 성공
+				
+				/*
+				 * 세션에 회원아이디 저장하기, 추후 로그인여부를 체크하기 위해 세션에 값이 존재하는지 체크한다.
+				 * 일반적으로 세션에 저장된는 키는 대문자로 입력하며, 앞에 SS를 붙인다.
+				 * 
+				 * Session 단어에서 SS를 가져온 것이다.
+				 */
+				session.setAttribute("SS_USER_ID", user_id);
+			}
+			
+		} catch(Exception e) {
+			//저장이 실패되면 사용자에게 보여줄 메세지
+			res = 2;
+			log.info(e.toString());
+			e.printStackTrace();
+		} finally {
+			log.info(this.getClass().getName() + ".insertUserInfo end!");
+			
+			/* 로그인 처리 결과를 jsp에 전달하기 위해 변수 사용
+			 * 숫자 유형의 데이터 타입은 값을 전달하고 받는데 불편함이 있어
+			 * 문자 유형(String)으로 강제 형변환하여 jsp에 전달한다.
+			 */
+			model.addAttribute("res", String.valueOf(res));
+			
+			// 변수 초기화(메모리 효율화 시키기 위해 사용함)
+			pDTO = null;
+		}
+		
+		return "/user/LoginResult";
 	}
 }
