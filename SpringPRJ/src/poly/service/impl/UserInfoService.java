@@ -2,6 +2,7 @@ package poly.service.impl;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import poly.dto.MailDTO;
@@ -103,7 +104,8 @@ public class UserInfoService implements IUserInfoService {
 		
 		// 로그인을 위해 아이디와 비밀번호가 일치하는지 확인하기 위한 mapper 호출하기
 		UserInfoDTO rDTO = userInfoMapper.getUserLoginCheck(pDTO);
-		
+		Logger log=Logger.getLogger(this.getClass().getName());
+		log.info("rDTO :"+rDTO.toString());
 		if (rDTO == null) {
 			rDTO = new UserInfoDTO();
 		}
