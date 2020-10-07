@@ -245,7 +245,7 @@ public class UserInfoController {
 			//저장이 실패되면 사용자에게 보여줄 메세지
 			res = 2;
 			log.info(e.toString());
-			e.printStackTrace();
+			e.printStackTrace(); 
 		} finally {
 			log.info(this.getClass().getName() + ".insertUserInfo end!");
 			
