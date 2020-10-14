@@ -11,5 +11,7 @@
 		<typeAlias type="poly.dto.MailDTO" alias="MailDTO"/>
 		<typeAlias type="poly.dto.NoticeDTO" alias="NoticeDTO"/>
 		<typeAlias type="poly.dto.UserInfoDTO" alias="UserInfoDTO"/>
+		<typeAlias type="poly.dto.MovieDTO" alias="MovieDTO"/>
+		<typeAlias type="poly.dto.FoodDTO" alias="FoodDTO"/>
     </typeAliases>
 </configuration>
