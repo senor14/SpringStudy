@@ -32,7 +32,7 @@ function doDetail(seq) {
 <h2>공지사항</h2>
 <hr/>
 <br/>
-<table border="1", width="600px">
+<table border="1", width="600px"> 
 <tr>
 	<td width="100" align="center">순번</td>
 	<td width="200" align="center">제목</td>
