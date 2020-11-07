@@ -17,6 +17,17 @@
 </div>
 와! 스프링 아시는구나!
 참고로 겁.나.어.렵.습.니.다
+<table border = 2>
+	<tr>
+		<td rowspan = "2">1</td>
+		<td colspan = "2">2</td>
+		<td colspan = "2">3</td>
+	</tr>
+	<tr>
+		<td colspan ="2">4</td>
+		<td colspan ="2">5</td>
+	</tr>
+</table>
 <script src="https:..ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </body>
 </html>
