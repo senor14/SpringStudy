@@ -44,6 +44,10 @@ public class WordAnalysisService implements IWordAnalysisService {
 		this.nlp = new Komoran(DEFAULT_MODEL.LIGHT); // 학습데이터 경량화 버전(웹서비스에 적합함)
 		// this.nlp = new Komoran(DEFAULT_MODEL.FULL); // 학습데이터 전체 버전(일괄처리:배치 서비스에 적합함)
 		
+		// 데이터사전 로딩하기
+		// 윈도우 운영체제의 파일은 C:\를 붙이지 않아도 메인(주)드라이브인 C를 인식함
+		this.nlp.setUserDic("/myDic/wordDic.txt");
+		
 		log.info("난 톰켓이 부팅되면서 스프링 프레임워크가 자동 실행되었고, 스프링 실행될 때 nlp 변수에 Komoran 객체를 생성하여 저장하였다.");
 		
 		log.info(this.getClass().getName() + ".WordAnalysisService creator End!");
@@ -60,7 +64,7 @@ public class WordAnalysisService implements IWordAnalysisService {
 		// 분석할 문장에 대해 정제(쓸데없는 특수문자 제거)
 		String replace_text = text.replaceAll("[^가-힣a-zA-Z0-9]", " ");
 		
-		log.info("한국어 , 영어, 숫자 제어 단어 모두 한칸으로 변환시킨 문장 : " + replace_text);
+		log.info("한국어, 영어, 숫자 제어 단어 모두 한칸으로 변환시킨 문장 : " + replace_text);
 		
 		// 분석할 문장의 앞 뒤에 존재할 수 있는 필요없는 공백제거
 		String trim_text = replace_text.trim();
@@ -135,10 +139,12 @@ public class WordAnalysisService implements IWordAnalysisService {
 	public Map<String, Integer> doWordAnalysis(String text) throws Exception {
 
 		// 네이버 뉴스 내용을 가져오기
-		String newContext = newsCollectService.doNaverNewsContents(
-				"https://sports.news.naver.com/news.nhn?oid=139&aid=0002141859");
+		//String newContext = newsCollectService.doNaverNewsContents(
+			//	"https://sports.news.naver.com/news.nhn?oid=139&aid=0002141859");
 		
 		//https://news.naver.com/main/read.nhn?mode=LSD&mid=sec&sid1=101&oid=001&aid=0011955578
+		
+		String newContext = "아이오아이는 최고의 아이돌이며, 여자연예인 중에 멋진 걸그룹이다.";
 		
 		// 문장의 명사를 추출하기 위한 형태소 분석 실행
 		List<String> rList = this.doWordNouns(newContext);
