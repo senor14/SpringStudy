@@ -14,7 +14,7 @@
 		분석 메세지<br />
 		<input type="text" name="text_message" style="width:400px"/>
 		<br /> 
-		<br />
+		<br />  
 		<input type="submit" value="전송" />
 	</form>
 </body>
