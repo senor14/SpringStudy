@@ -15,7 +15,7 @@
 		<input type="text" name="text_message" style="width:400px"/>
 		<br />   
 		<br />  
-		<input type="submit" value="전송" />
+		<input type="submit" value="전송" />  
 	</form>
 </body>
 </html>
