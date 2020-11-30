@@ -13,7 +13,7 @@
 		<br />
 		이미지 파일 업로드 : <input type="file" name="fileUpload" />
 		<br />
-		<br />
+		<br /> 
 		<input type="submit" value="전송"/>
 	</form>
 
