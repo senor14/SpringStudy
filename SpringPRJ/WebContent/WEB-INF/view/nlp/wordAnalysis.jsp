@@ -12,7 +12,7 @@
 <meta charset="UTF-8">
 <title>감정 분석 결과</title>
 </head> 
-<body>
+<body>  
 	<h2>감정 분석 결과</h2>
 	<hr />
 	<br/>
